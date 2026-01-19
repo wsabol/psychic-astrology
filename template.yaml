@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  psychic-astrology
+  SAM Template for deploying the Astrology API as a Lambda Docker image.
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+
+Resources:
+  AstrologyFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Architectures:
+        - x86_64
+      Events:
+        AstrologyApi:
+          Type: Api
+          Properties:
+            Path: /calculate
+            Method: post
+    Metadata:
+      DockerTag: v1
+      DockerContext: .
+      Dockerfile: Dockerfile
+
+Outputs:
+  AstrologyApi:
+    Description: "API Gateway endpoint URL for Prod stage for Astrology function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/calculate/"
+  AstrologyFunction:
+    Description: "Astrology Lambda Function ARN"
+    Value: !GetAtt AstrologyFunction.Arn
+  AstrologyFunctionIamRole:
+    Description: "Implicit IAM Role created for Astrology function"
+    Value: !GetAtt AstrologyFunctionRole.Arn
