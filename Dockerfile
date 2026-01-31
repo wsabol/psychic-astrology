@@ -1,7 +1,7 @@
 FROM public.ecr.aws/lambda/python:3.14
 
 # Install build dependencies for C-extensions (like pyswisseph)
-RUN dnf -y install gcc gcc-c++ make
+RUN dnf -y install gcc gcc-c++ make libffi-devel
 
 # Copy requirements.txt
 COPY src/requirements.txt ${LAMBDA_TASK_ROOT}
