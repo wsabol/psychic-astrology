@@ -1,4 +1,4 @@
-FROM public.ecr.aws/lambda/python:3.11
+FROM public.ecr.aws/lambda/python:3.14
 
 # Install build dependencies for C-extensions (like pyswisseph)
 RUN yum -y install gcc gcc-c++ make
