@@ -61,5 +61,4 @@ jobs:
           --capabilities CAPABILITY_IAM \
           --no-confirm-changeset \
           --no-fail-on-empty-changeset \
-          --resolve-s3 \
           --image-repositories AstrologyFunction=${{ secrets.ECR_REPOSITORY_URL }}
