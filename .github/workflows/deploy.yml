@@ -57,6 +57,7 @@ jobs:
       run: |
         sam deploy \
           --stack-name psychic-astrology \
+          --resolve-s3 \
           --resolve-image-repos \
           --capabilities CAPABILITY_IAM \
           --no-confirm-changeset \
