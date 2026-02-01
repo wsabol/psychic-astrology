@@ -57,7 +57,7 @@ jobs:
       run: |
         sam deploy \
           --stack-name psychic-astrology \
+          --resolve-image-repos \
           --capabilities CAPABILITY_IAM \
           --no-confirm-changeset \
-          --no-fail-on-empty-changeset \
-          --image-repositories AstrologyFunction=${{ secrets.ECR_REPOSITORY_URL }}
+          --no-fail-on-empty-changeset
