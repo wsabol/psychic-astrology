@@ -237,9 +237,11 @@ def calculate_birth_chart(birth_data):
         print(f"[BIRTH-CHART] Unexpected error: {str(e)}", file=sys.stderr)
         return {"error": f"An unexpected error occurred: {str(e)}", "success": False}
 
-def calculate_current_moon_phase():
+def calculate_current_moon_phase(date_to_check=None):
     try:
-        if pytz:
+        if date_to_check:
+            now_utc = date_to_check
+        elif pytz:
             now_utc = datetime.now(pytz.UTC)
         else:
             from zoneinfo import ZoneInfo
@@ -254,22 +256,20 @@ def calculate_current_moon_phase():
         phase_angle = (moon_lon - sun_lon) % 360
         cycle_percentage = round((phase_angle / 360) * 100, 1)
         
-        # Improved phase detection with proper boundaries
-        # Each phase is 45 degrees (360/8 = 45)
-        # 0-22.5° = newMoon
-        # 22.5-67.5° = waxingCrescent
-        # 67.5-112.5° = firstQuarter
-        # 112.5-157.5° = waxingGibbous
-        # 157.5-202.5° = fullMoon
-        # 202.5-247.5° = waningGibbous
-        # 247.5-292.5° = lastQuarter
-        # 292.5-337.5° = waningCrescent
-        # 337.5-360° = newMoon (wrapping)
+        # Phase detection based on 45-degree sectors starting at 0
+        # 0-45°     = newMoon (index 0)
+        # 45-90°    = waxingCrescent (index 1)
+        # 90-135°   = firstQuarter (index 2)
+        # 135-180°  = waxingGibbous (index 3)
+        # 180-225°  = fullMoon (index 4)
+        # 225-270°  = waningGibbous (index 5)
+        # 270-315°  = lastQuarter (index 6)
+        # 315-360°  = waningCrescent (index 7)
         
         phase_names = ["newMoon", "waxingCrescent", "firstQuarter", "waxingGibbous", "fullMoon", "waningGibbous", "lastQuarter", "waningCrescent"]
         
-        # Add offset to center boundaries and round to nearest phase
-        phase_index = int(((phase_angle + 22.5) / 360) * 8) % 8
+        # Simple sector-based indexing as requested
+        phase_index = int((phase_angle / 360) * 8) % 8
         
         return {"phase": phase_names[phase_index], "phase_angle": round(phase_angle, 2), "cycle_percentage": cycle_percentage, "timestamp": now_utc.isoformat(), "success": True}
     except Exception as e:
