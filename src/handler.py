@@ -332,8 +332,18 @@ def lambda_handler(event, context):
     """
 
     try:
-        # API Gateway HTTP API sends body as string
-        if isinstance(event, dict) and "body" in event:
+        # Determine the request method
+        method = "POST"
+        if isinstance(event, dict):
+            if "httpMethod" in event:
+                method = event["httpMethod"]
+            elif "requestContext" in event and "http" in event["requestContext"] and "method" in event["requestContext"]["http"]:
+                method = event["requestContext"]["http"]["method"]
+
+        # API Gateway HTTP API sends body as string for POST
+        if method == "GET":
+            input_data = event.get("queryStringParameters") or {}
+        elif isinstance(event, dict) and "body" in event:
             input_data = json.loads(event["body"] or "{}")
         else:
             input_data = event or {}
